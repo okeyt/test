@@ -1,0 +1,7 @@
+{
+    "require": {
+        "monolog/monolog": "^1.24",
+        "doctrine/orm": "^2.6",
+        "php-amqplib/php-amqplib": "^2.8"
+    }
+}

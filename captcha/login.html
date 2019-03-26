@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta  charset="UTF-8">
+    <meta  name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta  http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>验证码示例-智能无感知bind模式</title>
+</head>
+<body>
+
+<form action="/login" method="post">
+    <input  type="text" name="username" placeholder="用户名">
+    <input  type="password" name="password" placeholder="密码">
+    <input  type="hidden" name="captchaId" value="9a8e6f06acf14c6a871b2468324fc8fa">
+    <div id="captcha"></div> <!-- 验证码容器元素 -->
+    <button type="submit" id="submit-btn">登录</button>
+</form>
+
+<script charset="UTF-8" type="text/javascript" src="http://cstaticdun.126.net/load.min.js"></script>
+<script charset="UTF-8" type="text/javascript" src="https://devimgs.oss-cn-hangzhou.aliyuncs.com/admin_js/jquery-1.11.2.min.js"></script>
+
+<script>
+
+    var captchaIns;
+    initNECaptcha({
+        element: '#captcha',
+        captchaId: '9a8e6f06acf14c6a871b2468324fc8fa',
+        mode: 'bind', // 仅智能无感知验证码时，mode 才能设置为 bind
+        width: '320px',
+        //enableClose: true, // 由业务方控制验证码弹框关闭
+        onVerify: function(err,ret){
+            // 用户验证码验证成功后，进行实际的提交行为
+            // todo
+            console.log(ret['validate']);
+            // if (!err) {
+            // 验证成功后，调用close方法关闭弹框（enableClose为true时调用）
+            //captchaIns.close()
+            //}
+
+            /*$.post("/captcha/LoginServlet.php",{validate:ret.validate},function(r){
+
+            },'json');*/
+
+            $.ajax({type: "get", async: !0, url: "https://saas-api.mayitest.cn/test/test?validate="+ret.validate, dataType: "jsonp", jsonp: "callback", success: function (t) {
+                    n(t)
+                }, fail: function (t) {
+                    alert(t.message)
+                }
+            });
+
+
+        }
+    }, function (instance) {
+        // 初始化成功后得到验证实例instance，可以调用实例的方法
+        captchaIns = instance
+    }, function (err) {
+        // 初始化失败后触发该函数，err对象描述当前错误信息
+    });
+    // 监听需要绑定的 button 的点击事件，手动调用实例的verify方法来验证
+    document.getElementById('submit-btn').addEventListener('click', function (e) {
+        e.preventDefault()
+        //  if (doSomething()) {                   // 在验证之前做一些自定义
+        captchaIns && captchaIns.verify ()  // 手动调用verify方法
+        // }
+    });
+</script>
+</body>
+</html>
